@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 
@@ -6,20 +6,36 @@ export default function Doing () {
   const [modal,setModal] = useState (false)
   const [Title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [id,setId] = useState ();
   
   const data = {
+    id:null,
     title:"",
     content:""
   }
-  const [todo,SetTodo] = useState([data])
+  // const [todo,SetTodo] = useState([])
 
   const onClick = () =>{
     setModal(!modal);
-    console.log("click function",modal);
+    // console.log("click function",modal);
     
 
   };
-  const onSubmit = (e:any) =>{
+ const [allData,setallData]=useState([])
+  const getTodoData = () =>{
+    if(JSON.parse(window.localStorage.getItem( 'Doing' ))){
+      setallData(JSON.parse(window.localStorage.getItem( 'Doing' )));
+    }
+    // console.log("all data",allData);
+    
+  }
+
+  useEffect(() => {
+    getTodoData()
+  },[]);
+
+
+  const onSubmit = () =>{
    
     if (!Title && !content) {
       Swal.fire({
@@ -42,16 +58,49 @@ export default function Doing () {
   } else {
     data.title=Title
     data.content=content
-    todo.push(data)
-    localStorage.setItem('Todo',JSON.stringify(todo) );
+    allData.push(data)
+    // console.log(todo,"sdfgasj");
+    
+    localStorage.setItem('Doing',JSON.stringify(allData) );
 
-    console.log("my data",todo);
+    // console.log("my data",todo);
     
   }
   setTitle('');
   setContent('');
 
   }
+  // console.log("svdhsad",allData);
+
+  const setData = (item:any,index:any) => {
+    let {id,title,content} =item;
+    // console.log(item);
+    setId(index)
+    setTitle(title)
+    setContent(content)
+ }
+//  console.log("id",id);
+ 
+
+ const updateData = () =>{
+  const data = JSON.parse(localStorage.getItem('Doing'))
+  console.log("update data",id);
+  let todo = {
+    id:id,
+    title:Title,
+    content:content
+  };
+  data[id].title=todo.title
+  data[id].content=todo.content
+  setallData(data)
+  localStorage.setItem('Doing',JSON.stringify(data));
+
+  setTitle('');
+  setContent('');
+
+  
+ }
+  
     return(
         <>
         <div className="card">
@@ -70,18 +119,34 @@ export default function Doing () {
     </div>
 
     </div>
-    <div className="section">
+    
+   {
+    allData?.map((item:any ,index)=> {
+      // put your console here.
+      return (
+        <div className="section " key={index}>
     <div className="cards">
   <div className="card-header">
-  Title
+    
+  {item?.title}
   </div>
   <div className="card-body">
-    <h5 className="card-title">Special title treatment</h5>
+    <h5 className="card-title">{item?.content}</h5>
     <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    <a href="#" className="btn btn-primary">Go somewhere</a>
+    <button className="btn btn-primary" onClick={()=> {
+      setModal(true)
+      setData(item,index)
+      }}>Edit</button>
   </div>
 </div>
     </div>
+      )
+    })
+   } 
+    
+      
+    
+      
     
   </div>
 </div>
@@ -96,7 +161,7 @@ export default function Doing () {
 
             <div className="mb-md-5 mt-md-4 pb-5">
 
-              <h2 className="fw-bold mb-2 text-uppercase">To Do</h2>
+              <h2 className="fw-bold mb-2 text-uppercase">Doing</h2>
               <p className="text-white-50 mb-5">Please Title  and Content here!</p>
 
               <div className="form-outline form-white mb-4">
@@ -121,9 +186,22 @@ export default function Doing () {
 
 
               <button className="btn btn-outline-light btn-lg px-5"
-               type="submit" onClick={onSubmit}
+               type="submit" onClick={() =>{
+                onSubmit()
+                setModal(false)
+               
+               } }
                >
                 Submit
+               </button>
+               <button className="btn btn-outline-light btn-lg px-5"
+               type="submit" onClick={() =>{
+                
+                updateData()
+                setModal(false)
+               } }
+               >
+                Update
                </button>
             </div>
 
