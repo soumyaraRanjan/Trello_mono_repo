@@ -47,6 +47,18 @@ a {
   background-color: rgb(224, 227, 230);
 }
 
+.headrs{
+  margin-left: 12px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: space-between;
+  
+}
+.btn:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+  color: #fff;
+  background-color: #00b3db;
+  border-color: #285e8e; /*set the color you want here*/
+}
 
 
 
