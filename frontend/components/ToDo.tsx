@@ -1,35 +1,210 @@
-export default function ToDo () {
-    return(
-        <>
-        <div className="card">
-  <div className="card-body">
-    <div className="headrs">
-      <div>
-        <h5 className="card-title bi bi-plus-lg font-weight-bold text-xl-left">To Do</h5>
+import { MouseEventHandler, useEffect, useState ,useRef} from "react";
+import Swal from "sweetalert2";
+
+
+export default function ToDo(dragStart:any,dragEnter:any) {
+  const [modal, setModal] = useState<boolean>(false);
+  const [body, setBody] = useState<{ title: string; content: string; id:any;}>({
+    title: "",
+    content: "",
+    id:null
+  });
+  const [todo, setTodo] = useState<typeof body[]>([]);
+
+  useEffect(() => {
+    const existingTodo = JSON.parse(localStorage.getItem("Todo")!);
+    if (existingTodo) {
+      setTodo(existingTodo);
+    }
+  }, []);
+
+  useEffect(() => {
+    todo?.length ? localStorage.setItem("Todo", JSON.stringify(todo)) : null;
+  }, [todo]);
+
+  const onClick = () => {
+    setModal(!modal);
+  };
+  const onSubmit = (e: any) => {
+    const { title, content } = body;
+    if (!title || !content) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please fill all the fields",
+      });
+      return;
+    }
+
+    setTodo([...todo, body]);
+    setBody({ title: "", content: "" ,id:null});
+  };
+
+  const setData = (item:any,index:any) => {
+    const { title, content } = body;
+    setBody({ title: item.title, content: item.content,id:index});
+    
+    console.log(body);
+    
+ }
+
+ const updateData = () =>{
+  const data = JSON.parse(localStorage.getItem('Todo'))
+  let allData= {
+    id:body.id,
+    title:body.title,
+    content:body.content
+  };
+  setTodo(data)
+  console.log("updated id",data);
+  
+  data[body.id].title=body.title
+  data[body.id].content=body.content
+  setBody(allData);
+  localStorage.setItem('Todo',JSON.stringify(data));
+  setBody({ title: "", content: "" ,id:null});
+
+ };
+
+  return (
+    <>
+      <div className="card" style={{ marginRight: "20px" }}>
+        <div className="card-body">
+          <div className="headrs">
+            <div>
+              <h5 className="card-title bi bi-plus-lg font-weight-bold text-xl-left">
+                Todo
+              </h5>
+            </div>
+            <div className="btn" onClick={onClick}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                className="bi bi-plus-lg "
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div className="">
+            {todo.length &&
+              todo.map((item, index) => (
+                <div
+                  key={index}
+                  onDragStart={(e) => dragStart.dragStart(e, index)}
+                  onDragEnter={(e) => dragEnter.dragEnter(e, index)}
+
+                  className="todo-card section"
+                  style={{ marginBottom: "8px", borderRadius: "10px" }}
+                  draggable
+                >
+                  <p className="card-header" style={{ fontWeight: "bold" }}>
+                    {item?.title}
+                  </p>
+                  <div className="card-body">
+                    <p className="card-text">{item?.content}</p>
+                  </div>
+                  <button className="btn btn-primary" onClick={()=> {
+      setModal(true)
+      setData(item,index)
+      }}>Edit</button>
+                </div>
+              ))}
+          </div>
+        </div>
       </div>
-    <div className="btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-plus-lg "  viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-</svg>
-    </div>
+      {modal && (
+        <section
+          className="gradient-custom "
+          style={{
+            color: "#fff",
+            height: "100vh",
+            width: "100vw",
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            translate: "-50% -50%",
+            zIndex: "100",
+            backgroundColor: "rgba(0,0,0, .2)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <div
+            className="p-5 text-center modal-style"
+            style={{ backgroundColor: "#0f0f0f", borderRadius: "10px" }}
+          >
+            <span
+              onClick={() => setModal(!modal)}
+              style={{
+                position: "absolute",
+                top: "2%",
+                left: "90%",
+                zIndex: "200",
+                color: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              X
+            </span>
+            <div className="">
+              <h2 className="fw-bold mb-2 text-uppercase">To Do</h2>
+              <p className="text-white-50 mb-5">
+                Please Title and Content here!
+              </p>
 
-    </div>
+              <div className="form-outline form-white mb-4">
+                <label className="form-label">Title</label>
 
-    <div className="section">
-    <div className="cards">
-  <div className="card-header">
-    Title
-  </div>
-  <div className="card-body">
-    <h5 className="card-title">Special title treatment</h5>
-    <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    <a href="#" className="btn btn-primary">Go somewhere</a>
-  </div>
-</div>
-    </div>
-  </div>
-</div>
-        </>
+                <input
+                  type="text"
+                  className="form-control form-control-lg"
+                  placeholder="Write your title here"
+                  value={body.title}
+                  name="title"
+                  onChange={(e) =>
+                    setBody({ ...body, [e.target.name]: e.target.value })
+                  }
+                />
+              </div>
 
-    );
+              <div className="form-outline form-white mb-4">
+                <label className="form-label">Content</label>
+                <input
+                  type="text"
+                  className="form-control form-control-lg mb-5 py-5"
+                  placeholder="Write your title here"
+                  value={body.content}
+                  name="content"
+                  onChange={(e) =>
+                    setBody({ ...body, [e.target.name]: e.target.value })
+                  }
+                />
+              </div>
+
+              <button
+                className="btn btn-outline-light btn-lg px-5"
+                type="submit"
+                onClick={onSubmit}
+              >
+                Submit
+              </button>
+              <button
+                className="btn btn-outline-light btn-lg px-5"
+                type="submit"
+                onClick={updateData}
+              >
+                update
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+    </>
+  );
 }
