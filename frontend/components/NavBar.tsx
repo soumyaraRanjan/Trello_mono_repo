@@ -1,4 +1,4 @@
-export default function NavBar() {
+const NavBar =()=> {
   return (
     <div className="NavBar">
       <nav className="navbar navbar-expand-lg ">
@@ -50,3 +50,4 @@ export default function NavBar() {
     </div>
   );
 }
+export default NavBar

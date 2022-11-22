@@ -1,8 +1,16 @@
-import { MouseEventHandler, useEffect, useState ,useRef} from "react";
+import React, { MouseEventHandler, useEffect, useState ,useRef} from "react";
 import Swal from "sweetalert2";
 
+interface x{
+  dragEnters:Function,
+  dragStart:Function,
+  drop:Function
+}
 
-export default function ToDo(dragStart:any,dragEnter:any) {
+
+const ToDo:React.FC<x> = ({dragEnters,dragStart,drop}) => {
+// export default function ToDo(dragStart:any,dragEnter:any) {
+  // const Todo:React.RC
   const [modal, setModal] = useState<boolean>(false);
   const [body, setBody] = useState<{ title: string; content: string; id:any;}>({
     title: "",
@@ -97,8 +105,18 @@ export default function ToDo(dragStart:any,dragEnter:any) {
               todo.map((item, index) => (
                 <div
                   key={index}
-                  onDragStart={(e) => dragStart.dragStart(e, index)}
-                  onDragEnter={(e) => dragEnter.dragEnter(e, index)}
+                  onDragStart={(e) => dragStart(e, index)}
+                  onDragEnter={(e) => {
+                    console.log("this is the drag enter todo");
+                    dragEnters(e, index)
+
+                    // console.log("drag---",dragEnter);
+                    
+                  }}
+                  onDragEnd={(e)=> {drop(e)
+                 
+                    console.log("this >>>>>>>>>>> is the drag drop todo");
+                  }}
 
                   className="todo-card section"
                   style={{ marginBottom: "8px", borderRadius: "10px" }}
@@ -208,3 +226,5 @@ export default function ToDo(dragStart:any,dragEnter:any) {
     </>
   );
 }
+
+export default ToDo

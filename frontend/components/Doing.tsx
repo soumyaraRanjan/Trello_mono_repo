@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
-export default function Doing(dragStart:any,dragEnter:any) {
+interface x{
+  dragEnters:Function,
+  dragStart:Function,
+  drop:Function
+}
+// export default function Doing(dragStart:any,dragEnter:Function) {
+  const Doing:React.FC<x> = ({dragEnters,dragStart,drop}) => {
   const [modal, setModal] = useState<boolean>(false);
   const [body, setBody] = useState<{ title: string; content: string; id:any;}>({
     title: "",
@@ -97,8 +102,19 @@ export default function Doing(dragStart:any,dragEnter:any) {
               todo.map((item, index) => (
                 <div
                   key={index}
-                  onDragStart={(e) => dragStart.dragStart(e, index)}
-                  onDragEnter={(e) => dragEnter.dragEnter(e, index)}
+                  onDragStart={(e) => dragStart(e, index)}
+                  onDragEnter={(e) => {
+                    // dragEnter(e, index)
+                    dragEnters(e,index)
+                    console.log("this is the drag enter doing");
+
+                    // console.log("thhhh----",dragEnter);
+                    
+                  }}
+                  onDragEnd={()=> {drop()
+                 
+                    console.log("--------------------------this is the  drop in  doing");
+                  }}
 
                   className="todo-card section"
                   style={{ marginBottom: "8px", borderRadius: "10px" }}
@@ -209,3 +225,6 @@ export default function Doing(dragStart:any,dragEnter:any) {
     </>
   );
 }
+
+
+export default Doing
