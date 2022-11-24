@@ -29,7 +29,7 @@ interface x{
   const onClick = () => {
     setModal(!modal);
   };
-  const onSubmit = (e: SubmitEvent) => {
+  const onSubmit = () => {
     const { title, content } = body;
     if (!title || !content) {
       Swal.fire({
@@ -52,7 +52,7 @@ interface x{
  }
 
  const updateData = () =>{
-  const data = JSON.parse(localStorage.getItem('Doing'))
+  const data:any = JSON.parse(localStorage.getItem('Doing')|| '{}')
   let allData= {
     id:body.id,
     title:body.title,

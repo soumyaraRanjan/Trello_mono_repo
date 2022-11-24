@@ -53,7 +53,7 @@ const Done:React.FC<x> = ({dragEnters,dragStart}) => {
  }
 
  const updateData = () =>{
-  const data = JSON.parse(localStorage.getItem('Done'))
+  const data = JSON.parse(localStorage.getItem('Done')|| '{}')
   let allData= {
     id:body.id,
     title:body.title,
