@@ -4,15 +4,15 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 
-const TodoPage =() =>{
-  const [todo,setTodo] = useState ()
+const DonePage =() =>{
+  const [done,setDone] = useState ()
     const routs = useRouter();
-    const id=routs.query.todo_id;
+    const id=routs.query.done_id;
     console.log("-------------------",id);
     useEffect(() => {
-      const existingTodo = JSON.parse(localStorage.getItem("Todo")!);
+      const existingTodo = JSON.parse(localStorage.getItem("Done")!);
       if (existingTodo) {
-        setTodo(existingTodo);
+        setDone(existingTodo);
       }
     }, []);
 
@@ -26,7 +26,7 @@ const TodoPage =() =>{
        
             <div className="d-flex justify-content-center "style={{ marginTop: '20rem' }}>
             <div className="card text-white bg-primary mb-3 " >
-            {todo?.filter(data => data.id == id).map(filteredPerson => (
+            {done?.filter(data => data.id == id).map(filteredPerson => (
               <div>
        < div className="card-header">Header</div>
           <div className="card-body">
@@ -40,4 +40,4 @@ const TodoPage =() =>{
     )
 
 }
-export default TodoPage
+export default DonePage

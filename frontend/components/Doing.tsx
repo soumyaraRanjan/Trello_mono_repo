@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 interface x{
@@ -8,6 +9,8 @@ interface x{
 // export default function Doing(dragStart:any,dragEnter:Function) {
   const Doing:React.FC<x> = ({dragEnters,dragStart,drop}) => {
   const [modal, setModal] = useState<boolean>(false);
+  const [button,setButton] = useState<boolean>(false)
+  const [submitButton,setsubmitButton] = useState<boolean>(false)
   const [body, setBody] = useState<{ title: string; content: string; id:any;}>({
     title: "",
     content: "",
@@ -28,28 +31,35 @@ interface x{
 
   const onClick = () => {
     setModal(!modal);
+    setsubmitButton(true)
+    setButton(false)
   };
   const onSubmit = () => {
-    const { title, content } = body;
-    if (!title || !content) {
+    const { title, content,id } = body;
+    var letters = /^[A-Za-z]+$/;
+
+    if (!title || !content || !id || !body.content.match(letters)) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Please fill all the fields",
       });
+     
       return;
     }
-
+    setModal(!modal)
     setTodo([...todo, body]);
-    setBody({ title: "", content: "" ,id:null});
+    setBody({ title: "", content: "" ,id:''});
   };
   const setData = (item:any,index:any) => {
-    const { title, content } = body;
+    const { title, content ,id } = body;
     setBody({ title: item.title, content: item.content,id:index});
+    setButton(true)
+    setsubmitButton(false)
     
     console.log(body);
     
- }
+  }
 
  const updateData = () =>{
   const data:any = JSON.parse(localStorage.getItem('Doing')|| '{}')
@@ -66,19 +76,20 @@ interface x{
   setBody(allData);
   localStorage.setItem('Doing',JSON.stringify(data));
   setBody({ title: "", content: "" ,id:null});
-
+  setModal(!modal)
 
 
  }
 
   return (
     <>
+     
       <div className="card" style={{ marginRight: "20px" }}>
         <div className="card-body">
           <div className="headrs">
             <div>
               <h5 className="card-title bi bi-plus-lg font-weight-bold text-xl-left">
-                DOING
+                Doing
               </h5>
             </div>
             <div className="btn" onClick={onClick}>
@@ -100,42 +111,65 @@ interface x{
           <div className="">
             {todo.length &&
               todo.map((item, index) => (
+              //   <Link
+              //   href={`/todo/${index}`}
+                
+              // > 
                 <div
                   key={index}
                   onDragStart={(e) => dragStart(e, index)}
                   onDragEnter={(e) => {
-                    // dragEnter(e, index)
-                    dragEnters(e,index)
-                    console.log("this is the drag enter doing");
+                    console.log("this is the drag enter todo");
+                    dragEnters(e, index)
 
-                    // console.log("thhhh----",dragEnter);
+                    // console.log("drag---",dragEnter);
                     
                   }}
-                  onDragEnd={()=> {drop()
+                  onDragEnd={(e)=> {drop(e)
                  
-                    console.log("--------------------------this is the  drop in  doing");
+                    console.log("this >>>>>>>>>>> is the drag drop todo");
                   }}
 
                   className="todo-card section"
                   style={{ marginBottom: "8px", borderRadius: "10px" }}
                   draggable
                 >
-                  <p className="card-header" style={{ fontWeight: "bold" }}>
+                  <div className="d-flex ">
+
+                  <div className="card-header w-100" style={{ fontWeight: "bold" }}>
                     {item?.title}
-                  </p>
-                  <div className="card-body">
-                    <p className="card-text">{item?.content}</p>
                   </div>
-                  <button className="btn btn-primary" onClick={()=> {
+                  <div className="card-header" style={{ fontWeight: "bold" }}>
+                    {item?.id}
+                  </div>
+                  </div>
+                  <div className="card-body d-flex justify-content-between">
+
+                    <div className="card-text">{item?.content}</div>
+                    <div className="">
+                  <button className="btn btn- bg-transparent " onClick={()=> {
       setModal(true)
       setData(item,index)
-      }}>Edit</button>
-                </div>
+      }}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil  " viewBox="0 0 16 16">
+      <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+    </svg></button>
+       <Link href={`/doing/${item.id}`}> 
+            <button className="btn btn- bg-transparent mx-100" >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-eye" viewBox="0 0 16 16">
+              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+              <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+              </svg>  
+              </button>
+        </Link> 
+       </div>
+       </div>
+      </div>
                 
               ))}
           </div>
         </div>
       </div>
+      
       {modal && (
         <section
           className="gradient-custom "
@@ -152,28 +186,42 @@ interface x{
             backdropFilter: "blur(4px)",
           }}
         >
-          <span
-            onClick={() => setModal(!modal)}
-            style={{
-              position: "absolute",
-              top: "2%",
-              left: "60%",
-              zIndex: "200",
-              color: "#fff",
-              cursor: "pointer",
-            }}
-          >
-            X
-          </span>
           <div
-            className="card-body p-5 text-center modal-style"
-            style={{ backgroundColor: "#0f0f0f" }}
+            className="p-5 text-center modal-style"
+            style={{ backgroundColor: "#0f0f0f", borderRadius: "10px" }}
           >
-            <div className="mb-md-5 mt-md-4 pb-5">
-              <h2 className="fw-bold mb-2 text-uppercase">To Do</h2>
+            <span
+              onClick={() => setModal(!modal)}
+              style={{
+                position: "absolute",
+                top: "2%",
+                left: "90%",
+                zIndex: "200",
+                color: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              X
+            </span>
+            <div className="">
+              <h2 className="fw-bold mb-2 text-uppercase">Doing</h2>
               <p className="text-white-50 mb-5">
-                Please Title and Content here!
+                Please Write Title and Content here!
               </p>
+              <div className="form-outline form-white mb-4">
+                <label className="form-label">Id</label>
+
+                <input
+                  type="text"
+                  className="form-control form-control-lg"
+                  placeholder="Id"
+                  value={body.id}
+                  name="id"
+                  onChange={(e) =>
+                    setBody({ ...body, [e.target.name]: e.target.value })
+                  }
+                />
+              </div>
 
               <div className="form-outline form-white mb-4">
                 <label className="form-label">Title</label>
@@ -192,9 +240,8 @@ interface x{
 
               <div className="form-outline form-white mb-4">
                 <label className="form-label">Content</label>
-                <input
-                  type="text"
-                  className="form-control form-control-lg mb-5 py-5"
+                <textarea
+                  className="form-control form-control-lg mb-5 "
                   placeholder="Write your title here"
                   value={body.content}
                   name="content"
@@ -204,20 +251,31 @@ interface x{
                 />
               </div>
 
-              <button
+              {
+              submitButton  && (
+                <button
                 className="btn btn-outline-light btn-lg px-5"
                 type="submit"
                 onClick={onSubmit}
               >
                 Submit
               </button>
-              <button
-                className="btn btn-outline-light btn-lg px-5"
-                type="submit"
-                onClick={updateData}
-              >
-                update
-              </button>
+
+              )
+             }
+
+             
+              {
+                button && (
+                  <button
+                  className="btn btn-outline-light btn-lg px-5"
+                  type="submit"
+                  onClick={updateData}
+                >
+                  update
+                </button>
+                )
+              }
             </div>
           </div>
         </section>

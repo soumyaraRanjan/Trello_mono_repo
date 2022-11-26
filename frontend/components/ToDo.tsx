@@ -13,6 +13,9 @@ const ToDo:React.FC<x> = ({dragEnters,dragStart,drop}) => {
 // export default function ToDo(dragStart:any,dragEnter:any) {
   // const Todo:React.RC
   const [modal, setModal] = useState<boolean>(false);
+  const [button,setButton] = useState<boolean>(false)
+  const [submitButton,setsubmitButton] = useState<boolean>(false)
+
   const [body, setBody] = useState<{ title: string; content: string; id:any;}>({
     title: "",
     content: "",
@@ -32,24 +35,31 @@ const ToDo:React.FC<x> = ({dragEnters,dragStart,drop}) => {
   }, [todo]);
 
   const onClick = () => {
+    setsubmitButton(true)
     setModal(!modal);
+    setButton(false)
   };
   const onSubmit = (e: any) => {
+    var letters = /^[A-Za-z]+$/;
     const { title, content ,id} = body;
-    if (!title || !content || !id) {
+    if (!title || !content || !id || !body.content.match(letters)) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Please fill all the fields",
       });
+      
       return;
     }
-
+    
+    setModal(!modal)
     setTodo([...todo, body]);
     setBody({ title: "", content: "" ,id:null});
   };
 
   const setData = (item:any,index:any) => {
+    setButton(true)
+    setsubmitButton(false)
     const { title, content } = body;
     setBody({ title: item.title, content: item.content,id:index});
     
@@ -72,6 +82,7 @@ const ToDo:React.FC<x> = ({dragEnters,dragStart,drop}) => {
   setBody(allData);
   localStorage.setItem('Todo',JSON.stringify(data));
   setBody({ title: "", content: "" ,id:null});
+  setModal(!modal)
 
  };
 
@@ -234,9 +245,8 @@ const ToDo:React.FC<x> = ({dragEnters,dragStart,drop}) => {
 
               <div className="form-outline form-white mb-4">
                 <label className="form-label">Content</label>
-                <input
-                  type="text"
-                  className="form-control form-control-lg mb-5 py-5"
+                <textarea
+                  className="form-control form-control-lg mb-5 "
                   placeholder="Write your title here"
                   value={body.content}
                   name="content"
@@ -245,21 +255,32 @@ const ToDo:React.FC<x> = ({dragEnters,dragStart,drop}) => {
                   }
                 />
               </div>
-
-              <button
+             {
+              submitButton  && (
+                <button
                 className="btn btn-outline-light btn-lg px-5"
                 type="submit"
                 onClick={onSubmit}
               >
                 Submit
               </button>
-              <button
-                className="btn btn-outline-light btn-lg px-5"
-                type="submit"
-                onClick={updateData}
-              >
-                update
-              </button>
+
+              )
+             }
+
+             
+              {
+                button && (
+                  <button
+                  className="btn btn-outline-light btn-lg px-5"
+                  type="submit"
+                  onClick={updateData}
+                >
+                  update
+                </button>
+                )
+              }
+             
             </div>
           </div>
         </section>
