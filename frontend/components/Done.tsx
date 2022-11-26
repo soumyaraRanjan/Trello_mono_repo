@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 interface x{
   dragEnters:Function,
   dragStart:Function,
+  // drop:Function
   
 }
 const Done:React.FC<x> = ({dragEnters,dragStart}) => {
@@ -128,10 +129,10 @@ const Done:React.FC<x> = ({dragEnters,dragStart}) => {
                     // console.log("drag---",dragEnter);
                     
                   }}
-                  onDragEnd={(e)=> {drop(e)
+                  // onDragEnd={(e)=> {drop(e)
                  
-                    console.log("this >>>>>>>>>>> is the drag drop todo");
-                  }}
+                  //   console.log("this >>>>>>>>>>> is the drag drop todo");
+                  // }}
 
                   className="todo-card section"
                   style={{ marginBottom: "8px", borderRadius: "10px" }}

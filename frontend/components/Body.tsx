@@ -54,14 +54,14 @@ const Body =()=> {
   };
 
   const drop = (e:any) => {
-    const copyListItems = [...doing];
-    const dragItemContent = copyListItems[dragItem.current];
-    copyListItems.splice(dragItem.current, 1);
-    copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-    dragItem.current = null;
-    dragOverItem.current = null;
-    setDoing(copyListItems);
-    localStorage.setItem('Doing',JSON.stringify(doing));
+    // const copyListItems = [...doing];
+    // const dragItemContent = copyListItems[dragItem.current];
+    // copyListItems.splice(dragItem.current, 1);
+    // copyListItems.splice(dragOverItem.current, 0, dragItemContent);
+    // dragItem.current = null;
+    // dragOverItem.current = null;
+    // setDoing(copyListItems);
+    // localStorage.setItem('Doing',JSON.stringify(doing));
 
     console.log("body drop",doing);
     
